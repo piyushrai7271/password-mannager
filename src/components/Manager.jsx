@@ -19,13 +19,13 @@ const Manager = () => {
   const copyText = (text) => {
     toast("🦄 Copied to clipboard", {
       position: "top-right",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
+      theme: "dark",
     });
     navigator.clipboard.writeText(text);
   };
@@ -42,6 +42,7 @@ const Manager = () => {
   };
 
   const savePassword = () => {
+    if(form.site.length  >3 && form.username.length > 3 && form.password.length > 3){
     setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
     localStorage.setItem(
       "password",
@@ -49,6 +50,29 @@ const Manager = () => {
     );
     console.log([...passwordArray, form]);
     setForm({ site: "", username: "", password: "" });
+    //additional code
+    toast("🦄 Password saved", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  } else {
+    toast("🦄 Error: password not saved", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  }
   };
   const deletePassword = (id) => {
     console.log("deleting password with id", id);
@@ -56,6 +80,17 @@ const Manager = () => {
     if(c){
       setPasswordArray(passwordArray.filter(item=>item.id !== id));
       localStorage.setItem("password", JSON.stringify(passwordArray.filter(item=>item.id !== id)));
+      //additional code
+      toast("🦄 Password Deleted", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 
@@ -73,7 +108,7 @@ const Manager = () => {
     <>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -94,7 +129,7 @@ const Manager = () => {
         w-[310px] rounded-full bg-green-400 opacity-20 blur-[100px]"
         ></div>
       </div>
-      <div className="mycontainer">
+      <div className="md:mycontainer p-2 min-h-[89vh]">
         <h1 className="text-4xl text font-bold text-center">
           <span className="text-green-700">&lt;</span>
           <span>Pass</span>
@@ -111,9 +146,9 @@ const Manager = () => {
             onChange={handleChange}
             type="text"
             name="site"
-            id=""
+            id="site"
           />
-          <div className="flex w-full gap-8">
+          <div className="flex flex-col md:flex-row w-full gap-8">
             <input
               value={form.username}
               className="rounded-full border border-green-500 w-full p-4 py-1"
@@ -121,7 +156,7 @@ const Manager = () => {
               onChange={handleChange}
               type="text"
               name="username"
-              id=""
+              id="username"
             />
             <div className="relative">
               <input
@@ -132,7 +167,7 @@ const Manager = () => {
                 onChange={handleChange}
                 type="password"
                 name="password"
-                id=""
+                id="password"
               />
               <span
                 className="absolute right-[3px] top-[4px] cursor-pointer"
@@ -156,14 +191,14 @@ const Manager = () => {
               src="https://cdn.lordicon.com/jgnvfzqg.json"
               trigger="hover"
             ></lord-icon>
-            Save password
+            Save
           </button>
         </div>
         <div className="password">
           <h2 className="font-bold text-2xl py-4">Your Password</h2>
           {passwordArray.lenght === 0 && <div>No Passwords to show </div>}
           {passwordArray.lenght != 0 && (
-            <table className="table-auto w-full rounded-md overflow-hidden">
+            <table className="table-auto w-full rounded-md overflow-hidden mb-10">
               <thead className="bg-green-800 text-white">
                 <tr>
                   <th className="py-2">Site</th>
