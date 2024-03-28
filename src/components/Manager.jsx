@@ -103,7 +103,7 @@ const Manager = () => {
     let c = confirm("Do you realy want to delete this ?");
     if (c) {
       setPasswordArray(passwordArray.filter((item) => item.id !== id));
-      let res = await fetch("http://localhost:3500/", {
+      await fetch("http://localhost:3500/", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
