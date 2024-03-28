@@ -49,14 +49,25 @@ const Manager = () => {
     }
   };
 
-  const savePassword = async() => {
+  const savePassword = async () => {
     if (
       form.site.length > 3 &&
       form.username.length > 3 &&
       form.password.length > 3
     ) {
+      // if any such id exist in the db delete it
+      await fetch("http://localhost:3500/", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id:form.id }),
+      });
+
       setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-      
+      await fetch("http://localhost:3500/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, id: uuidv4() }),
+      });
       // localStorage.setItem(
       //   "password",
       //   JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
@@ -87,15 +98,20 @@ const Manager = () => {
       });
     }
   };
-  const deletePassword = (id) => {
+  const deletePassword = async (id) => {
     console.log("deleting password with id", id);
     let c = confirm("Do you realy want to delete this ?");
     if (c) {
       setPasswordArray(passwordArray.filter((item) => item.id !== id));
-      localStorage.setItem(
-        "password",
-        JSON.stringify(passwordArray.filter((item) => item.id !== id))
-      );
+      let res = await fetch("http://localhost:3500/", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      // localStorage.setItem(
+      //   "password",
+      //   JSON.stringify(passwordArray.filter((item) => item.id !== id))
+      // );
       //additional code
       toast("🦄 Password Deleted", {
         position: "top-right",
@@ -112,7 +128,7 @@ const Manager = () => {
 
   const editPassword = (id) => {
     console.log("editing password with id", id);
-    setForm(passwordArray.filter((i) => i.id === id)[0]);
+    setForm({...passwordArray.filter((i) => i.id === id)[0], id:id});
     setPasswordArray(passwordArray.filter((item) => item.id !== id));
   };
 
